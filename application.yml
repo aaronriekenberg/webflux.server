@@ -5,3 +5,8 @@ command-config:
     description: ls
     command: /bin/ls
     arguments: [-l]
+
+  - id: sleep
+    description: sleep 1
+    command: /bin/sleep
+    arguments: [1]
