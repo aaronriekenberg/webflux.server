@@ -1,6 +1,10 @@
 command-config:
   commands:
 
+  - id: ifconfig
+    description: ifconfig
+    command: /sbin/ifconfig
+
   - id: ls
     description: ls
     command: /bin/ls
