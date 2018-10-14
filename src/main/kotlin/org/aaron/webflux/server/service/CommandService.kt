@@ -12,6 +12,7 @@ import reactor.core.scheduler.Scheduler
 import reactor.core.scheduler.Schedulers
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import java.time.OffsetDateTime
 import java.util.concurrent.Executors
 
 @Service
@@ -40,6 +41,7 @@ class CommandService(
     fun runCommand(id: String): Mono<CommandResult> {
         return getById(id).flatMap { command ->
             val blockingWrapper = Mono.fromCallable {
+                val startTime = OffsetDateTime.now()
                 try {
                     val commandAndArgs = listOf(command.command) + command.arguments
                     val processBuilder = ProcessBuilder(commandAndArgs)
@@ -52,12 +54,14 @@ class CommandService(
                     logger.debug { "exitValue = $exitValue" }
                     CommandResult(
                             command = command,
+                            startTime = startTime,
                             output = output,
                             exitValue = exitValue)
                 } catch (e: Exception) {
                     logger.warn(e) { "runCommand $command" }
                     CommandResult(
                             command = command,
+                            startTime = startTime,
                             output = "command error ${e.message}",
                             exitValue = -1)
                 }
