@@ -1,0 +1,7 @@
+command-config:
+  commands:
+
+  - id: ls
+    description: ls
+    command: /bin/ls
+    arguments: [-l]
