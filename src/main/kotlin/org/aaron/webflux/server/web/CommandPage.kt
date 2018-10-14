@@ -15,6 +15,11 @@ class CommandPage(
 
     companion object : KLogging()
 
+    private val notFoundRendering =
+            Rendering.view("error/404")
+                    .status(HttpStatus.NOT_FOUND)
+                    .build()
+
     @GetMapping("/commands/{id}")
     fun command(@PathVariable(required = true) id: String): Mono<Rendering> {
         return commandService.runCommand(id).map { commandResult ->
@@ -22,10 +27,6 @@ class CommandPage(
                     .modelAttribute("commandResult", commandResult)
                     .status(HttpStatus.OK)
                     .build()
-        }.switchIfEmpty(Mono.just(
-                Rendering.view("error/404")
-                        .status(HttpStatus.NOT_FOUND)
-                        .build()
-        ))
+        }.defaultIfEmpty(notFoundRendering)
     }
 }
