@@ -14,7 +14,7 @@ class LoggingFilter : WebFilter {
     companion object : KLogging()
 
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
-        logger.info { getRequestMessage(exchange) }
+        logger.debug { getRequestMessage(exchange) }
 
         exchange.response.beforeCommit {
             logger.info { getResponseMessage(exchange) }
@@ -31,7 +31,7 @@ class LoggingFilter : WebFilter {
         val path = request.uri.path
         val acceptableMediaTypes = request.headers.accept
         val contentType = request.headers.contentType
-        return ">>> $method $path $remoteAddress ${HttpHeaders.ACCEPT}: $acceptableMediaTypes ${HttpHeaders.CONTENT_TYPE}: $contentType"
+        return ">>> $remoteAddress $method $path ${HttpHeaders.ACCEPT}: $acceptableMediaTypes ${HttpHeaders.CONTENT_TYPE}: $contentType"
     }
 
     private fun getResponseMessage(exchange: ServerWebExchange): String {
@@ -41,8 +41,7 @@ class LoggingFilter : WebFilter {
         val method = request.method
         val path = request.uri.path
         val statusCode = response.statusCode
-        val contentType = response.headers.contentType
-        return "<<< $method $path $remoteAddress ${statusCode?.value()} ${statusCode?.reasonPhrase} ${HttpHeaders.CONTENT_TYPE}: $contentType"
+        return "$remoteAddress $method $path status=${statusCode?.value()}"
     }
 
 }

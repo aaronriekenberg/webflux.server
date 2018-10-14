@@ -44,18 +44,18 @@ class CommandService(
                     val commandAndArgs = listOf(command.command) + command.arguments
                     val processBuilder = ProcessBuilder(commandAndArgs)
                     processBuilder.redirectErrorStream(true)
-                    logger.info { "start process $commandAndArgs" }
+                    logger.debug { "start process $commandAndArgs" }
                     val process = processBuilder.start()
                     val exitValue = process.waitFor()
                     val reader = BufferedReader(InputStreamReader(process.inputStream))
                     val output = reader.readLines().joinToString(separator = "\n")
-                    logger.info { "exitValue = $exitValue" }
+                    logger.debug { "exitValue = $exitValue" }
                     CommandResult(
                             command = command,
                             output = output,
                             exitValue = exitValue)
                 } catch (e: Exception) {
-                    logger.warn(e) { "runCommand" }
+                    logger.warn(e) { "runCommand $command" }
                     CommandResult(
                             command = command,
                             output = "command error ${e.message}",
