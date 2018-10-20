@@ -10,7 +10,6 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.core.scheduler.Scheduler
 import reactor.core.scheduler.Schedulers
-import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.time.OffsetDateTime
 import java.util.concurrent.Executors
@@ -49,8 +48,9 @@ class CommandService(
                     logger.debug { "start process $commandAndArgs" }
                     val process = processBuilder.start()
                     val exitValue = process.waitFor()
-                    val reader = BufferedReader(InputStreamReader(process.inputStream))
-                    val output = reader.readLines().joinToString(separator = "\n")
+                    val output = InputStreamReader(process.inputStream)
+                            .readLines()
+                            .joinToString(separator = "\n")
                     logger.debug { "exitValue = $exitValue" }
                     CommandResult(
                             command = command,
