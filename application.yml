@@ -29,3 +29,32 @@ static-paths:
 spring:
   resources:
     static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/webapp/,classpath:/public/,file:/Users/aaron/test/
+
+---
+
+spring:
+  profiles: apu2
+  resources:
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/webapp/,classpath:/public/,file:/home/aaron/vnstat/
+
+command-config:
+  commands:
+
+  - id: ifconfig
+    description: ifconfig
+    command: /sbin/ifconfig
+
+  - id: ls
+    description: ls
+    command: /bin/ls
+    arguments: [-l]
+
+proxy-config:
+  proxies:
+  - id: coredns_metrics
+    description: coredns metrics
+    url: http://localhost:9153/metrics
+
+static-paths:
+  paths:
+  - path: /vnstat.html
