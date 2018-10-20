@@ -14,3 +14,10 @@ command-config:
     description: sleep 1
     command: /bin/sleep
     arguments: [1]
+
+proxy-config:
+  proxies:
+
+  - id: test_proxy
+    description: google proxy
+    url: http://www.google.com

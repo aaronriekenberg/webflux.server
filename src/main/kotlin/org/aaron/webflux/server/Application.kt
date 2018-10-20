@@ -1,12 +1,13 @@
 package org.aaron.webflux.server
 
 import org.aaron.webflux.server.config.CommandConfig
+import org.aaron.webflux.server.config.ProxyConfig
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 
 @SpringBootApplication
-@EnableConfigurationProperties(CommandConfig::class)
+@EnableConfigurationProperties(CommandConfig::class, ProxyConfig::class)
 class Application {
 
 }
