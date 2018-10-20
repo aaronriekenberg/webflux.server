@@ -7,6 +7,8 @@ import org.springframework.web.server.ServerWebExchange
 import org.springframework.web.server.WebFilter
 import org.springframework.web.server.WebFilterChain
 import reactor.core.publisher.Mono
+import java.time.Duration
+import java.time.Instant
 
 @Component
 class LoggingFilter : WebFilter {
@@ -14,11 +16,13 @@ class LoggingFilter : WebFilter {
     companion object : KLogging()
 
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
+        val startTime = Instant.now()
         logger.debug { getRequestMessage(exchange) }
 
         exchange.response.beforeCommit {
-            logger.info { getResponseMessage(exchange) }
-            Mono.empty()
+            Mono.fromRunnable {
+                logger.info { getResponseMessage(exchange, startTime) }
+            }
         }
 
         return chain.filter(exchange)
@@ -34,14 +38,16 @@ class LoggingFilter : WebFilter {
         return ">>> $remoteAddress $method $path ${HttpHeaders.ACCEPT}: $acceptableMediaTypes ${HttpHeaders.CONTENT_TYPE}: $contentType"
     }
 
-    private fun getResponseMessage(exchange: ServerWebExchange): String {
+    private fun getResponseMessage(exchange: ServerWebExchange, startTime: Instant): String {
+        val endTime = Instant.now()
         val request = exchange.request
         val remoteAddress = request.remoteAddress
         val response = exchange.response
         val method = request.method
         val path = request.uri.path
         val statusCode = response.statusCode
-        return "$remoteAddress $method $path status=${statusCode?.value()}"
+        val delta = (Duration.between(startTime, endTime).toNanos() / 1e9)
+        return "$remoteAddress $method $path status=${statusCode?.value()} delta=${delta}s"
     }
 
 }
