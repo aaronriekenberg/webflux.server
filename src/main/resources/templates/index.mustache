@@ -28,6 +28,15 @@
   </ul>
   {{/proxies.empty}}
 
+  {{^staticPaths.empty}}
+  <h3>Proxies:</h3>
+  <ul>
+    {{#staticPaths}}
+      <li><a href="{{path}}">{{path}}</a></li>
+    {{/staticPaths}}
+  </ul>
+  {{/staticPaths.empty}}
+
 </body>
 
 </html>

@@ -21,3 +21,11 @@ proxy-config:
   - id: test_proxy
     description: google proxy
     url: http://www.google.com
+
+static-paths:
+  paths:
+  - path: /vnstat.html
+
+spring:
+  resources:
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/webapp/,classpath:/public/,file:/Users/aaron/test/
