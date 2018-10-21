@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.reactive.result.view.Rendering
+import java.time.OffsetDateTime
 
 @Controller
 class IndexPage(
@@ -19,6 +20,8 @@ class IndexPage(
 
     companion object : KLogging()
 
+    private val startTime = OffsetDateTime.now().toString()
+
     @GetMapping("/")
     fun index(): Rendering {
         return Rendering.view("index")
@@ -26,6 +29,7 @@ class IndexPage(
                 .modelAttribute("commands", commandService.getCommands())
                 .modelAttribute("proxies", proxyService.getProxies())
                 .modelAttribute("staticPaths", staticPathsService.getStaticPaths())
+                .modelAttribute("startTime", startTime)
                 .status(HttpStatus.OK)
                 .build()
     }
