@@ -1,3 +1,9 @@
+logging:
+  config: logback.xml
+
+main-page:
+  title: Test Webflux Server
+
 command-config:
   commands:
 
@@ -22,32 +28,113 @@ proxy-config:
     description: google proxy
     url: http://www.google.com
 
-static-paths:
-  paths:
-  - path: /vnstat.html
-
-spring:
-  resources:
-    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/webapp/,classpath:/public/,file:/Users/aaron/test/
-
 ---
 
 spring:
   profiles: apu2
   resources:
-    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/webapp/,classpath:/public/,file:/home/aaron/vnstat/
+    static-locations: classpath:/resources/,classpath:/static/,file:/home/aaron/vnstat/
+
+main-page:
+  title: Aaron's APU2
 
 command-config:
   commands:
 
-  - id: ifconfig
+  - id: /arp
+    description: arp
+    command: /usr/sbin/arp
+    arguments: [-a, -n]
+
+  - id: /coredns_log_tail
+    description: coredns log tail
+    command: tail
+    arguments: [-n, 30, /home/aaron/coredns-run/logs/current]
+
+  - id: /cpu_vulnerabilities
+    description: cpu vulnerabilities
+    command: /bin/sh
+    arguments: [-c, grep . /sys/devices/system/cpu/vulnerabilities/*]
+
+  - id: /df
+    description: df
+    command: df
+    arguments: [-h]
+
+  - id: /dhcp-lease-list
+    description: dhcp lease list
+    command: /home/aaron/rust-dhcp-leases/target/release/rust-dhcp-leases
+    arguments: []
+
+  - id: /dmesg
+    description: dmesg
+    command: sudo
+    arguments: [dmesg]
+
+  - id: /ifconfig
     description: ifconfig
     command: /sbin/ifconfig
+    arguments: []
 
-  - id: ls
-    description: ls
-    command: /bin/ls
-    arguments: [-l]
+  - id: /log_ls
+    description: log ls
+    command: ls
+    arguments: [-latrh, /home/aaron/rust_hyper_run/logs/]
+
+  - id: /log_tail
+    description: log tail
+    command: tail
+    arguments: [-n, 30, /home/aaron/rust_hyper_run/logs/current]
+
+  - id: /lscpu
+    description: lscpu
+    command: lscpu
+    arguments: []
+
+  - id: /ncal
+    description: ncal
+    command: ncal
+    arguments: [-h, -y]
+
+  - id: /netstat_an
+    description: netstat -an
+    command: netstat
+    arguments: [-a, -n]
+
+  - id: /netstat_s
+    description: netstat -s
+    command: netstat
+    arguments: [-s]
+
+  - id: /ntpq
+    description: ntpq
+    command: ntpq
+    arguments: [-p]
+
+  - id: /sensors
+    description: sensors
+    command: sensors
+    arguments: []
+
+  - id: /top
+    description: top
+    command: top
+    arguments: [-b, -n1]
+
+  - id: /uptime
+    description: uptime
+    command: uptime
+    arguments: []
+
+  - id: /vmstat
+    description: vmstat
+    command: vmstat
+    arguments: []
+
+  - id: /w
+    description: w
+    command: w
+    arguments: []
 
 proxy-config:
   proxies:
