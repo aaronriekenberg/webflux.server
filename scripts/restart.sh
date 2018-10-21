@@ -8,4 +8,8 @@ if [ ! -d logs ]; then
   mkdir logs
 fi
 
-nohup java -Dspring.profiles.active=$(hostname) -Xmx1g -jar ./webflux.server-1.0-SNAPSHOT.jar 2>&1 | svlogd logs &
+JAVA_OPTS="-Dspring.profiles.active=$(hostname)"
+JAVA_OPTS="$JAVA_OPTS -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=7999 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=192.168.1.1"
+JAVA_OPTS="$JAVA_OPTS -Xmx1g"
+
+nohup java $JAVA_OPTS -jar ./webflux.server-1.0-SNAPSHOT.jar 2>&1 | svlogd logs &
