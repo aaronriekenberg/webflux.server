@@ -79,12 +79,12 @@ command-config:
   - id: log_ls
     description: log ls
     command: ls
-    arguments: [-latrh, /home/aaron/rust_hyper_run/logs/]
+    arguments: [-latrh, /home/aaron/webflux.server/logs/]
 
   - id: log_tail
     description: log tail
     command: tail
-    arguments: [-n, 30, /home/aaron/rust_hyper_run/logs/current]
+    arguments: [-n, 30, /home/aaron/webflux.server/logs/current]
 
   - id: lscpu
     description: lscpu
