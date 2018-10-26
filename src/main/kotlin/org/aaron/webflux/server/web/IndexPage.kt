@@ -33,14 +33,14 @@ class IndexPage(
             setCacheControl(CacheControl.maxAge(1, TimeUnit.MINUTES))
             lastModified = startTime.toInstant().toEpochMilli()
         }
-        return Rendering.view("index")
-                .modelAttribute("mainPageConfig", mainPageConfig)
-                .modelAttribute("commands", commandService.getCommands())
-                .modelAttribute("proxies", proxyService.getProxies())
-                .modelAttribute("staticPaths", staticPathsService.getStaticPaths())
-                .modelAttribute("startTime", startTimeString)
-                .headers(headers)
-                .status(HttpStatus.OK)
-                .build()
+        return Rendering.view("index").apply {
+            modelAttribute("mainPageConfig", mainPageConfig)
+            modelAttribute("commands", commandService.getCommands())
+            modelAttribute("proxies", proxyService.getProxies())
+            modelAttribute("staticPaths", staticPathsService.getStaticPaths())
+            modelAttribute("startTime", startTimeString)
+            headers(headers)
+            status(HttpStatus.OK)
+        }.build()
     }
 }

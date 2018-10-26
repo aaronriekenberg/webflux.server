@@ -19,14 +19,14 @@ class CommandPage(
     @GetMapping("/commands/{id}")
     fun command(@PathVariable(required = true) id: String): Mono<Rendering> {
         return commandService.runCommand(id).map { commandResult ->
-            Rendering.view("command")
-                    .modelAttribute("commandResult", commandResult)
-                    .status(HttpStatus.OK)
-                    .build()
+            Rendering.view("command").apply {
+                modelAttribute("commandResult", commandResult)
+                status(HttpStatus.OK)
+            }.build()
         }.defaultIfEmpty(
-                Rendering.view("error/404")
-                        .status(HttpStatus.NOT_FOUND)
-                        .build()
+                Rendering.view("error/404").apply {
+                    status(HttpStatus.NOT_FOUND)
+                }.build()
         )
     }
 }

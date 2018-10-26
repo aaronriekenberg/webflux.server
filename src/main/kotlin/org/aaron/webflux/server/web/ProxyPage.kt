@@ -18,14 +18,14 @@ class ProxyPage(
     @GetMapping("/proxies/{id}")
     fun command(@PathVariable(required = true) id: String): Mono<Rendering> {
         return proxyService.makeRequest(id).map { proxyResult ->
-            Rendering.view("proxy")
-                    .modelAttribute("proxyResult", proxyResult)
-                    .status(HttpStatus.OK)
-                    .build()
+            Rendering.view("proxy").apply {
+                modelAttribute("proxyResult", proxyResult)
+                status(HttpStatus.OK)
+            }.build()
         }.defaultIfEmpty(
-                Rendering.view("error/404")
-                        .status(HttpStatus.NOT_FOUND)
-                        .build()
+                Rendering.view("error/404").apply {
+                    status(HttpStatus.NOT_FOUND)
+                }.build()
         )
     }
 }
