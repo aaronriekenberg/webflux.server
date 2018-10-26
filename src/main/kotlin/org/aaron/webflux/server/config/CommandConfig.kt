@@ -8,7 +8,7 @@ import javax.annotation.PostConstruct
 @ConfigurationProperties(prefix = "command-config")
 data class CommandConfig(
         var commands: MutableList<MutableCommand> = mutableListOf(),
-        var runCommandThreads: Int = Runtime.getRuntime().availableProcessors() * 2) {
+        var elasticThreadTTLSeconds: Int = 30) {
 
     companion object : KLogging()
 

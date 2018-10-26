@@ -26,7 +26,7 @@ class CommandService(
             .toMap()
 
     private val runCommandScheduler: Scheduler =
-            Schedulers.newElastic("runCommandScheduler", 30)
+            Schedulers.newElastic("runCommandScheduler", commandConfig.elasticThreadTTLSeconds)
 
     fun getById(id: String): Mono<Command> {
         return Mono.justOrEmpty(idToCommand[id])
