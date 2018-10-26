@@ -12,7 +12,6 @@ import reactor.core.scheduler.Scheduler
 import reactor.core.scheduler.Schedulers
 import java.io.InputStreamReader
 import java.time.OffsetDateTime
-import java.util.concurrent.Executors
 
 @Service
 class CommandService(
@@ -27,7 +26,7 @@ class CommandService(
             .toMap()
 
     private val runCommandScheduler: Scheduler =
-            Schedulers.fromExecutor(Executors.newFixedThreadPool(commandConfig.runCommandThreads))
+            Schedulers.newElastic("runCommandScheduler", 30)
 
     fun getById(id: String): Mono<Command> {
         return Mono.justOrEmpty(idToCommand[id])
