@@ -4,8 +4,8 @@ version '1.0-SNAPSHOT'
 buildscript {
     ext {
         kotlinVersion = '1.3.21'
-        springBootVersion = '2.1.2.RELEASE'
-        kotlinLoggingVersion = '1.6.23'
+        springBootVersion = '2.1.3.RELEASE'
+        kotlinLoggingVersion = '1.6.25'
     }
     repositories {
         mavenCentral()
