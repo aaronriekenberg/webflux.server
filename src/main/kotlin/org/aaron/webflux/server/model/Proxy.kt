@@ -1,5 +1,7 @@
 package org.aaron.webflux.server.model
 
+import java.time.OffsetDateTime
+
 data class MutableProxy(
         var id: String? = null,
         var description: String? = null,
@@ -19,4 +21,12 @@ data class Proxy(
         val id: String,
         val description: String,
         val url: String
+)
+
+data class ProxyAPIResult(
+        val proxy: Proxy,
+        val now: OffsetDateTime,
+        val responseBody: String,
+        val responseHeaders: Map<String, List<String>>,
+        val responseStatus: Int
 )

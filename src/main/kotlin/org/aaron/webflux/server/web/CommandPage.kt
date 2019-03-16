@@ -15,12 +15,11 @@ class CommandPage(
 
     companion object : KLogging()
 
-
     @GetMapping("/commands/{id}")
     fun command(@PathVariable(required = true) id: String): Mono<Rendering> {
-        return commandService.runCommand(id).map { commandResult ->
+        return commandService.getById(id).map { command ->
             Rendering.view("command").apply {
-                modelAttribute("commandResult", commandResult)
+                modelAttribute("command", command)
                 status(HttpStatus.OK)
             }.build()
         }.defaultIfEmpty(

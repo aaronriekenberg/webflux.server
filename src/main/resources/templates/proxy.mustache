@@ -2,26 +2,22 @@
 <html>
 
 <head>
-  <title>{{proxyResult.proxy.description}}</title>
+  <title>{{proxy.description}}</title>
   <meta name="viewport" content="width=device, initial-scale=1" />
   <link rel="stylesheet" type="text/css" href="/style.css" />
+  <script src="/proxy.js"></script>
 </head>
 
-<body>
+<body onload="onload('GET {{proxy.url}}', '/api/proxies/{{proxy.id}}')">
 
-<a href="..">..</a>
+<div>
+  <a href="..">..</a>
+  &nbsp;
+  <input type="checkbox" id="autoRefresh">
+  <label for="autoRefresh">Auto Refresh</label>
+</div>
 
-<pre>Now: {{proxyResult.startTime}}
-
-GET {{proxyResult.proxy.url}}
-
-Response Status: {{proxyResult.responseStatus}}
-
-Response Headers:
-{{proxyResult.responseHeaders}}
-
-{{proxyResult.responseBody}}
-</pre>
+<pre></pre>
 
 </body>
 

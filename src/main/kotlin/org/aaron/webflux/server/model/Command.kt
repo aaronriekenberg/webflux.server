@@ -1,5 +1,7 @@
 package org.aaron.webflux.server.model
 
+import java.time.OffsetDateTime
+
 data class MutableCommand(
         var id: String? = null,
         var description: String? = null,
@@ -18,7 +20,7 @@ data class MutableCommand(
                 commandAndArguments = commandAndArguments
         )
     }
-    
+
 }
 
 class Command(
@@ -27,3 +29,10 @@ class Command(
         val command: String,
         val arguments: List<String>,
         val commandAndArguments: String)
+
+data class CommandAPIResult(
+        val command: Command,
+        val now: OffsetDateTime,
+        val output: String,
+        val exitValue: Int
+)

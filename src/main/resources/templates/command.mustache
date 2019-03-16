@@ -2,22 +2,23 @@
 <html>
 
 <head>
-  <title>{{commandResult.command.description}}</title>
+  <title>{{command.description}}</title>
   <meta name="viewport" content="width=device, initial-scale=1" />
   <link rel="stylesheet" type="text/css" href="/style.css" />
+  <script src="/command.js"></script>
 </head>
 
-<body>
+<body onload="onload('{{command.commandAndArguments}}', '/api/commands/{{command.id}}')">
 
-<a href="..">..</a>
+ <div>
+   <a href="..">..</a>
+   &nbsp;
+   <input type="checkbox" id="autoRefresh" checked>
+   <label for="autoRefresh">Auto Refresh</label>
+ </div>
 
-<pre>Now: {{commandResult.startTime}}
+ <pre></pre>
 
-$ {{commandResult.command.commandAndArguments}}
+ </body>
 
-{{commandResult.output}}
-</pre>
-
-</body>
-
-</html>
+ </html>

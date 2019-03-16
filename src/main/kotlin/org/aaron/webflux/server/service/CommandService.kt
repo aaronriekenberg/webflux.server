@@ -3,7 +3,7 @@ package org.aaron.webflux.server.service
 import mu.KLogging
 import org.aaron.webflux.server.config.CommandConfig
 import org.aaron.webflux.server.model.Command
-import org.aaron.webflux.server.model.CommandResult
+import org.aaron.webflux.server.model.CommandAPIResult
 import org.aaron.webflux.server.model.MutableCommand
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
@@ -36,10 +36,9 @@ class CommandService(
         return Flux.fromIterable(idToCommand.values)
     }
 
-    fun runCommand(id: String): Mono<CommandResult> {
+    fun runCommand(id: String): Mono<CommandAPIResult> {
         return getById(id).flatMap { command ->
             val blockingWrapper = Mono.fromCallable {
-                val startTime = OffsetDateTime.now()
                 try {
                     val commandAndArgs = listOf(command.command) + command.arguments
                     val processBuilder = ProcessBuilder(commandAndArgs)
@@ -51,16 +50,16 @@ class CommandService(
                             .readLines()
                             .joinToString(separator = "\n")
                     logger.debug { "exitValue = $exitValue" }
-                    CommandResult(
+                    CommandAPIResult(
                             command = command,
-                            startTime = startTime,
+                            now = OffsetDateTime.now(),
                             output = output,
                             exitValue = exitValue)
                 } catch (e: Exception) {
                     logger.warn(e) { "runCommand $command" }
-                    CommandResult(
+                    CommandAPIResult(
                             command = command,
-                            startTime = startTime,
+                            now = OffsetDateTime.now(),
                             output = "command error ${e.message}",
                             exitValue = -1)
                 }

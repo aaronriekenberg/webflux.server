@@ -4,7 +4,7 @@ import mu.KLogging
 import org.aaron.webflux.server.config.ProxyConfig
 import org.aaron.webflux.server.model.MutableProxy
 import org.aaron.webflux.server.model.Proxy
-import org.aaron.webflux.server.model.ProxyResult
+import org.aaron.webflux.server.model.ProxyAPIResult
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
@@ -35,29 +35,28 @@ class ProxyService(
         return Flux.fromIterable(idToProxy.values)
     }
 
-    fun makeRequest(id: String): Mono<ProxyResult> {
+    fun makeRequest(id: String): Mono<ProxyAPIResult> {
         return getById(id).flatMap { proxy ->
-            val startTime = OffsetDateTime.now()
             val uri = URI(proxy.url)
 
             webClient.get()
                     .uri(uri)
                     .exchange()
                     .flatMap { clientResponse ->
-                        val responseHeaders = clientResponse.headers().asHttpHeaders().toString()
+                        val responseHeaders = clientResponse.headers().asHttpHeaders()
                         if (!clientResponse.statusCode().is2xxSuccessful) {
-                            ProxyResult(
+                            ProxyAPIResult(
                                     proxy = proxy,
-                                    startTime = startTime,
+                                    now = OffsetDateTime.now(),
                                     responseBody = "Proxy Error",
                                     responseHeaders = responseHeaders,
                                     responseStatus = clientResponse.statusCode().value()).toMono()
                         } else {
                             clientResponse.bodyToMono<String>()
                                     .map { responseBody ->
-                                        ProxyResult(
+                                        ProxyAPIResult(
                                                 proxy = proxy,
-                                                startTime = startTime,
+                                                now = OffsetDateTime.now(),
                                                 responseBody = responseBody,
                                                 responseHeaders = responseHeaders,
                                                 responseStatus = clientResponse.statusCode().value())

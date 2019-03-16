@@ -17,9 +17,9 @@ class ProxyPage(
 
     @GetMapping("/proxies/{id}")
     fun command(@PathVariable(required = true) id: String): Mono<Rendering> {
-        return proxyService.makeRequest(id).map { proxyResult ->
+        return proxyService.getById(id).map { proxy ->
             Rendering.view("proxy").apply {
-                modelAttribute("proxyResult", proxyResult)
+                modelAttribute("proxy", proxy)
                 status(HttpStatus.OK)
             }.build()
         }.defaultIfEmpty(
