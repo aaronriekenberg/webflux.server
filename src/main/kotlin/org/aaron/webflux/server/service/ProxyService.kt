@@ -43,7 +43,7 @@ class ProxyService(
                     .uri(uri)
                     .exchange()
                     .flatMap { clientResponse ->
-                        val responseHeaders = clientResponse.headers().asHttpHeaders()
+                        val responseHeaders = clientResponse.headers().asHttpHeaders().toSortedMap()
                         if (!clientResponse.statusCode().is2xxSuccessful) {
                             ProxyAPIResult(
                                     proxy = proxy,
