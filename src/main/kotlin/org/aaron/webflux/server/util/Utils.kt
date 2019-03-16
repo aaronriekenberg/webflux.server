@@ -18,9 +18,9 @@ fun <T> Mono<T>.okOrNotFoundResponseEntityIfEmpty(): Mono<ResponseEntity<T>> {
 }
 
 fun Mono<Rendering>.notFoundRenderingViewIfEmpty(): Mono<Rendering> {
-    return this.defaultIfEmpty(
-            Rendering.view("error/404").apply {
-                status(HttpStatus.NOT_FOUND)
-            }.build()
-    )
+    return this.switchIfEmpty(Mono.fromCallable {
+        Rendering.view("error/404").apply {
+            status(HttpStatus.NOT_FOUND)
+        }.build()
+    })
 }
