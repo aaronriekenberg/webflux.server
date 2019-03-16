@@ -3,7 +3,7 @@ package org.aaron.webflux.server.api
 import mu.KLogging
 import org.aaron.webflux.server.model.ProxyAPIResult
 import org.aaron.webflux.server.service.ProxyService
-import org.springframework.http.HttpStatus
+import org.aaron.webflux.server.util.okOrNotFoundResponseEntityIfEmpty
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -21,8 +21,6 @@ class ProxyController(
     @GetMapping("/{id}")
     fun makeRequest(@PathVariable(required = true) id: String): Mono<ResponseEntity<ProxyAPIResult>> {
         logger.debug { "makeRequest id = ${id}" }
-        return proxyService.makeRequest(id).map { proxyAPIResult ->
-            ResponseEntity.ok(proxyAPIResult)
-        }.switchIfEmpty(Mono.just(ResponseEntity(HttpStatus.NOT_FOUND)))
+        return proxyService.makeRequest(id).okOrNotFoundResponseEntityIfEmpty()
     }
 }

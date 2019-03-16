@@ -2,6 +2,7 @@ package org.aaron.webflux.server.web
 
 import mu.KLogging
 import org.aaron.webflux.server.service.CommandService
+import org.aaron.webflux.server.util.notFoundRenderingViewIfEmpty
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
@@ -22,10 +23,6 @@ class CommandPage(
                 modelAttribute("command", command)
                 status(HttpStatus.OK)
             }.build()
-        }.defaultIfEmpty(
-                Rendering.view("error/404").apply {
-                    status(HttpStatus.NOT_FOUND)
-                }.build()
-        )
+        }.notFoundRenderingViewIfEmpty()
     }
 }
