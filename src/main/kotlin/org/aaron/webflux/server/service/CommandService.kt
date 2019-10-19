@@ -38,14 +38,12 @@ class CommandService(
     suspend fun runCommand(id: String): CommandAPIResult? {
         val command = getById(id) ?: return null
 
-        logger.info("runCommand before coroutineScope")
-
         return withContext(Dispatchers.IO) {
             try {
                 val commandAndArgs = listOf(command.command) + command.arguments
                 val processBuilder = ProcessBuilder(commandAndArgs)
                 processBuilder.redirectErrorStream(true)
-                logger.info { "start process $commandAndArgs" }
+                logger.debug { "start process $commandAndArgs" }
                 val process = processBuilder.start()
                 val exitValue = process.waitFor()
                 val output = InputStreamReader(process.inputStream)
