@@ -1,7 +1,6 @@
 package org.aaron.webflux.server.service
 
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.withContext
 import mu.KotlinLogging
 import org.aaron.webflux.server.config.CommandConfig
@@ -11,7 +10,6 @@ import org.aaron.webflux.server.model.MutableCommand
 import org.springframework.stereotype.Service
 import java.io.InputStreamReader
 import java.time.OffsetDateTime
-import java.util.concurrent.Executors
 
 private val logger = KotlinLogging.logger {}
 
@@ -24,8 +22,6 @@ class CommandService(
             .map(MutableCommand::toCommand)
             .map { it.id to it }
             .toMap()
-
-    private val runCommandDispatcher = Executors.newCachedThreadPool().asCoroutineDispatcher()
 
     fun getById(id: String): Command? {
         return idToCommand[id]
