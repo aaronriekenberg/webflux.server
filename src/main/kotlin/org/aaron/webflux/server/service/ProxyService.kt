@@ -1,5 +1,6 @@
 package org.aaron.webflux.server.service
 
+import kotlinx.coroutines.delay
 import mu.KotlinLogging
 import org.aaron.webflux.server.config.ProxyConfig
 import org.aaron.webflux.server.model.MutableProxy
@@ -16,7 +17,7 @@ private val logger = KotlinLogging.logger {}
 
 @Service
 class ProxyService(
-        proxyConfig: ProxyConfig,
+        private val proxyConfig: ProxyConfig,
         private val webClient: WebClient) {
 
     private val idToProxy: Map<String, Proxy> = proxyConfig.proxies
@@ -38,27 +39,55 @@ class ProxyService(
 
         val uri = URI(proxy.url)
 
-        val clientResponse = webClient.get()
-                .uri(uri)
-                .awaitExchange()
+        var success = false
+        var tries = 0
+        var delayMS = proxyConfig.retryDelayMS
+        var lastResult: ProxyAPIResult? = null
 
-        val responseHeaders = clientResponse.headers().asHttpHeaders().toSortedMap()
+        while ((!success) && (tries < proxyConfig.maxRetries)) {
+            try {
+                ++tries
 
-        return if (!clientResponse.statusCode().is2xxSuccessful) {
-            ProxyAPIResult(
-                    proxy = proxy,
-                    now = OffsetDateTime.now(),
-                    responseBody = "Proxy Error",
-                    responseHeaders = responseHeaders,
-                    responseStatus = clientResponse.statusCode().value())
-        } else {
-            val responseBody = clientResponse.awaitBody<String>()
-            ProxyAPIResult(
-                    proxy = proxy,
-                    now = OffsetDateTime.now(),
-                    responseBody = responseBody,
-                    responseHeaders = responseHeaders,
-                    responseStatus = clientResponse.statusCode().value())
+                val clientResponse = webClient.get()
+                        .uri(uri)
+                        .awaitExchange()
+
+                val responseHeaders = clientResponse.headers().asHttpHeaders().toSortedMap()
+
+                if (!clientResponse.statusCode().is2xxSuccessful) {
+                    lastResult = ProxyAPIResult(
+                            proxy = proxy,
+                            now = OffsetDateTime.now(),
+                            responseBody = "Proxy Error",
+                            responseHeaders = responseHeaders,
+                            responseStatus = clientResponse.statusCode().value())
+                } else {
+                    val responseBody = clientResponse.awaitBody<String>()
+                    lastResult = ProxyAPIResult(
+                            proxy = proxy,
+                            now = OffsetDateTime.now(),
+                            responseBody = responseBody,
+                            responseHeaders = responseHeaders,
+                            responseStatus = clientResponse.statusCode().value())
+                    success = true
+                }
+            } catch (e: Exception) {
+                logger.warn(e) { "makeRequest" }
+                lastResult = ProxyAPIResult(
+                        proxy = proxy,
+                        now = OffsetDateTime.now(),
+                        responseBody = "Proxy Exception: ${e.javaClass}: ${e.message}")
+            }
+
+            if ((!success) && (tries < proxyConfig.maxRetries)) {
+                logger.info { "delay $delayMS" }
+                delay(delayMS)
+                delayMS *= 2L
+            }
         }
+
+        return lastResult
     }
+
+
 }
