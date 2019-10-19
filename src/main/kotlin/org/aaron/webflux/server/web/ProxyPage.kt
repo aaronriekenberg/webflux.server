@@ -2,13 +2,11 @@ package org.aaron.webflux.server.web
 
 import mu.KLogging
 import org.aaron.webflux.server.service.ProxyService
-import org.aaron.webflux.server.util.notFoundRenderingViewIfEmpty
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.reactive.result.view.Rendering
-import reactor.core.publisher.Mono
 
 @Controller
 class ProxyPage(
@@ -17,12 +15,18 @@ class ProxyPage(
     companion object : KLogging()
 
     @GetMapping("/proxies/{id}")
-    fun command(@PathVariable(required = true) id: String): Mono<Rendering> {
-        return proxyService.getById(id).map { proxy ->
+    fun command(@PathVariable(required = true) id: String): Rendering {
+        val proxy = proxyService.getById(id)
+
+        return if (proxy == null) {
+            Rendering.view("error/404").apply {
+                status(HttpStatus.NOT_FOUND)
+            }.build()
+        } else {
             Rendering.view("proxy").apply {
                 modelAttribute("proxy", proxy)
                 status(HttpStatus.OK)
             }.build()
-        }.notFoundRenderingViewIfEmpty()
+        }
     }
 }

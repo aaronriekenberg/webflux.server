@@ -1,6 +1,6 @@
 package org.aaron.webflux.server.web
 
-import mu.KLogging
+import mu.KotlinLogging
 import org.aaron.webflux.server.config.MainPageConfig
 import org.aaron.webflux.server.service.CommandService
 import org.aaron.webflux.server.service.ProxyService
@@ -14,14 +14,14 @@ import org.springframework.web.reactive.result.view.Rendering
 import java.time.OffsetDateTime
 import java.util.concurrent.TimeUnit
 
+private val logger = KotlinLogging.logger {}
+
 @Controller
 class IndexPage(
         private val commandService: CommandService,
         private val mainPageConfig: MainPageConfig,
         private val proxyService: ProxyService,
         private val staticPathsService: StaticPathsService) {
-
-    companion object : KLogging()
 
     private val startTime = OffsetDateTime.now()
 

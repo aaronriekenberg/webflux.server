@@ -1,6 +1,6 @@
 package org.aaron.webflux.server.filter
 
-import mu.KLogging
+import mu.KotlinLogging
 import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Component
 import org.springframework.web.server.ServerWebExchange
@@ -10,10 +10,10 @@ import reactor.core.publisher.Mono
 import java.time.Duration
 import java.time.Instant
 
+private val logger = KotlinLogging.logger {}
+
 @Component
 class LoggingFilter : WebFilter {
-
-    companion object : KLogging()
 
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
         val startTime = Instant.now()
