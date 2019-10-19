@@ -1,8 +1,8 @@
 package org.aaron.webflux.server.service
 
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 import mu.KotlinLogging
 import org.aaron.webflux.server.config.CommandConfig
 import org.aaron.webflux.server.model.Command
@@ -40,33 +40,31 @@ class CommandService(
 
         logger.info("runCommand before coroutineScope")
 
-        return coroutineScope {
-            async(runCommandDispatcher) {
-                try {
-                    val commandAndArgs = listOf(command.command) + command.arguments
-                    val processBuilder = ProcessBuilder(commandAndArgs)
-                    processBuilder.redirectErrorStream(true)
-                    logger.info { "start process $commandAndArgs" }
-                    val process = processBuilder.start()
-                    val exitValue = process.waitFor()
-                    val output = InputStreamReader(process.inputStream)
-                            .readLines()
-                            .joinToString(separator = "\n")
-                    logger.debug { "exitValue = $exitValue" }
-                    CommandAPIResult(
-                            command = command,
-                            now = OffsetDateTime.now(),
-                            output = output,
-                            exitValue = exitValue)
-                } catch (e: Exception) {
-                    logger.warn(e) { "runCommand $command" }
-                    CommandAPIResult(
-                            command = command,
-                            now = OffsetDateTime.now(),
-                            output = "command error ${e.message}",
-                            exitValue = -1)
-                }
+        return withContext(Dispatchers.IO) {
+            try {
+                val commandAndArgs = listOf(command.command) + command.arguments
+                val processBuilder = ProcessBuilder(commandAndArgs)
+                processBuilder.redirectErrorStream(true)
+                logger.info { "start process $commandAndArgs" }
+                val process = processBuilder.start()
+                val exitValue = process.waitFor()
+                val output = InputStreamReader(process.inputStream)
+                        .readLines()
+                        .joinToString(separator = "\n")
+                logger.debug { "exitValue = $exitValue" }
+                CommandAPIResult(
+                        command = command,
+                        now = OffsetDateTime.now(),
+                        output = output,
+                        exitValue = exitValue)
+            } catch (e: Exception) {
+                logger.warn(e) { "runCommand $command" }
+                CommandAPIResult(
+                        command = command,
+                        now = OffsetDateTime.now(),
+                        output = "command error ${e.message}",
+                        exitValue = -1)
             }
-        }.await()
+        }
     }
 }
