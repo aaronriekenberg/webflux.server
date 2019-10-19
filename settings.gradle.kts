@@ -1,1 +1,1 @@
-rootProject.name = "webflux.coroutines"
+rootProject.name = "webflux.server"
