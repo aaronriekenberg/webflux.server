@@ -8,7 +8,7 @@ private val logger = KotlinLogging.logger {}
 
 @ConfigurationProperties(prefix = "main-page")
 data class MainPageConfig(
-        var title: String?) {
+        var title: String = "") {
 
     @PostConstruct
     fun postConstruct() {

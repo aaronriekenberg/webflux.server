@@ -2,8 +2,7 @@ package org.aaron.webflux.server.service
 
 import mu.KotlinLogging
 import org.aaron.webflux.server.config.StaticPathsConfig
-import org.aaron.webflux.server.model.MutableStaticPath
-import org.aaron.webflux.server.model.StaticPath
+import org.aaron.webflux.server.model.StaticPathConfiguration
 import org.springframework.stereotype.Service
 
 private val logger = KotlinLogging.logger {}
@@ -12,11 +11,9 @@ private val logger = KotlinLogging.logger {}
 class StaticPathsService(
         staticPathsConfig: StaticPathsConfig) {
 
-    private val staticPaths: List<StaticPath> = staticPathsConfig.paths
-            .asSequence()
-            .map(MutableStaticPath::toStaticPath)
+    private val staticPaths: List<StaticPathConfiguration> = staticPathsConfig.paths
             .toList()
 
-    fun getStaticPaths(): List<StaticPath> = staticPaths
+    fun getStaticPaths(): List<StaticPathConfiguration> = staticPaths
 
 }

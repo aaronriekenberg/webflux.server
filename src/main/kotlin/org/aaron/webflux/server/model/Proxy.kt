@@ -2,38 +2,17 @@ package org.aaron.webflux.server.model
 
 import java.time.OffsetDateTime
 
-data class MutableProxy(
-        var id: String? = null,
-        var description: String? = null,
-        var url: String? = null,
-        var maxParallelCalls: Int = 10,
-        var maxTries: Int = 1,
-        var retryDelayMS: Long = 100) {
-
-    fun toProxy(): Proxy {
-        return Proxy(
-                id = this.id!!,
-                description = this.description!!,
-                url = this.url!!,
-                maxParallelCalls = this.maxParallelCalls,
-                maxTries = this.maxTries,
-                retryDelayMS = this.retryDelayMS
-        )
-    }
-
-}
-
-data class Proxy(
+data class ProxyConfiguration(
         val id: String,
         val description: String,
         val url: String,
-        val maxParallelCalls: Int,
-        val maxTries: Int,
-        val retryDelayMS: Long
+        val maxParallelCalls: Int = 10,
+        val maxTries: Int = 1,
+        val retryDelayMS: Long = 100L
 )
 
 data class ProxyAPIResult(
-        val proxy: Proxy,
+        val proxy: ProxyConfiguration,
         val now: OffsetDateTime,
         val tries: Int,
         val responseBody: String,

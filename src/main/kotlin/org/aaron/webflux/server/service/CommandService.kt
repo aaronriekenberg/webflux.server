@@ -6,7 +6,7 @@ import mu.KotlinLogging
 import org.aaron.webflux.server.config.CommandConfig
 import org.aaron.webflux.server.model.Command
 import org.aaron.webflux.server.model.CommandAPIResult
-import org.aaron.webflux.server.model.MutableCommand
+import org.aaron.webflux.server.model.CommandConfiguration
 import org.springframework.stereotype.Service
 import java.io.InputStreamReader
 import java.time.OffsetDateTime
@@ -18,7 +18,7 @@ class CommandService(
         commandConfig: CommandConfig) {
 
     private val idToCommand: Map<String, Command> = commandConfig.commands
-            .map(MutableCommand::toCommand)
+            .map(CommandConfiguration::toCommand)
             .map { it.id to it }
             .toMap()
 
