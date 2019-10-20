@@ -18,17 +18,18 @@ class CommandService(
         commandConfig: CommandConfig) {
 
     private val idToCommand: Map<String, Command> = commandConfig.commands
-            .asSequence()
             .map(MutableCommand::toCommand)
             .map { it.id to it }
             .toMap()
+
+    private val commandList = idToCommand.values.toList()
 
     fun getById(id: String): Command? {
         return idToCommand[id]
     }
 
-    fun getCommands(): Collection<Command> {
-        return idToCommand.values
+    fun getCommands(): List<Command> {
+        return commandList
     }
 
     suspend fun runCommand(id: String): CommandAPIResult? {

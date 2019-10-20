@@ -1,6 +1,8 @@
 package org.aaron.webflux.server.service
 
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 import mu.KotlinLogging
 import org.aaron.webflux.server.config.ProxyConfig
 import org.aaron.webflux.server.model.MutableProxy
@@ -15,28 +17,40 @@ import java.time.OffsetDateTime
 
 private val logger = KotlinLogging.logger {}
 
+private data class ProxyInfo(
+        val proxy: Proxy,
+        val semaphore: Semaphore
+)
+
 @Service
 class ProxyService(
         private val proxyConfig: ProxyConfig,
         private val webClient: WebClient) {
 
-    private val idToProxy: Map<String, Proxy> = proxyConfig.proxies
-            .asSequence()
+    private val idToProxyInfo: Map<String, ProxyInfo> = proxyConfig.proxies
             .map(MutableProxy::toProxy)
-            .map { it.id to it }
+            .map {
+                it.id to ProxyInfo(
+                        proxy = it,
+                        semaphore = Semaphore(it.maxParallelCalls)
+                )
+            }
             .toMap()
 
+    private val proxyList = idToProxyInfo.values.map { it.proxy }.toList()
+
     fun getById(id: String): Proxy? {
-        return idToProxy[id]
+        return idToProxyInfo[id]?.proxy
     }
 
-    fun getProxies(): Collection<Proxy> {
-        return idToProxy.values
+    fun getProxies(): List<Proxy> {
+        return proxyList
     }
 
     suspend fun makeRequest(id: String): ProxyAPIResult? {
-        val proxy = getById(id) ?: return null
+        val proxyInfo = idToProxyInfo[id] ?: return null
 
+        val proxy = proxyInfo.proxy
         val uri = URI(proxy.url)
 
         var success = false
@@ -48,9 +62,12 @@ class ProxyService(
             try {
                 ++tries
 
-                val clientResponse = webClient.get()
-                        .uri(uri)
-                        .awaitExchange()
+                val clientResponse =
+                        proxyInfo.semaphore.withPermit {
+                            webClient.get()
+                                    .uri(uri)
+                                    .awaitExchange()
+                        }
 
                 val responseHeaders = clientResponse.headers().asHttpHeaders().toSortedMap()
 
@@ -83,7 +100,7 @@ class ProxyService(
             }
 
             if ((!success) && (tries < proxyConfig.maxRetries)) {
-                logger.info { "delay $delayMS" }
+                logger.debug { "delay $delayMS" }
                 delay(delayMS)
                 delayMS *= 2L
             }

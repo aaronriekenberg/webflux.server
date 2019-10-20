@@ -5,13 +5,15 @@ import java.time.OffsetDateTime
 data class MutableProxy(
         var id: String? = null,
         var description: String? = null,
-        var url: String? = null) {
+        var url: String? = null,
+        var maxParallelCalls: Int = 10) {
 
     fun toProxy(): Proxy {
         return Proxy(
                 id = this.id!!,
                 description = this.description!!,
-                url = this.url!!
+                url = this.url!!,
+                maxParallelCalls = this.maxParallelCalls
         )
     }
 
@@ -20,7 +22,8 @@ data class MutableProxy(
 data class Proxy(
         val id: String,
         val description: String,
-        val url: String
+        val url: String,
+        val maxParallelCalls: Int
 )
 
 data class ProxyAPIResult(
