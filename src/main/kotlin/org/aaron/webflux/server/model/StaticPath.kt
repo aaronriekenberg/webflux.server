@@ -1,5 +1,5 @@
 package org.aaron.webflux.server.model
 
-data class StaticPathConfiguration(
+data class StaticPath(
         val path: String
 )

@@ -5,8 +5,8 @@ import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import mu.KotlinLogging
 import org.aaron.webflux.server.config.ProxyConfig
+import org.aaron.webflux.server.model.Proxy
 import org.aaron.webflux.server.model.ProxyAPIResult
-import org.aaron.webflux.server.model.ProxyConfiguration
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.awaitBody
@@ -17,7 +17,7 @@ import java.time.OffsetDateTime
 private val logger = KotlinLogging.logger {}
 
 private data class ProxyInfo(
-        val proxy: ProxyConfiguration,
+        val proxy: Proxy,
         val semaphore: Semaphore
 )
 
@@ -37,11 +37,11 @@ class ProxyService(
 
     private val proxyList = idToProxyInfo.values.map { it.proxy }.toList()
 
-    fun getById(id: String): ProxyConfiguration? {
+    fun getById(id: String): Proxy? {
         return idToProxyInfo[id]?.proxy
     }
 
-    fun getProxies(): List<ProxyConfiguration> {
+    fun getProxies(): List<Proxy> {
         return proxyList
     }
 

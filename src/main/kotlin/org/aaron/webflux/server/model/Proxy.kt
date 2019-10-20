@@ -2,7 +2,7 @@ package org.aaron.webflux.server.model
 
 import java.time.OffsetDateTime
 
-data class ProxyConfiguration(
+data class Proxy(
         val id: String,
         val description: String,
         val url: String,
@@ -12,7 +12,7 @@ data class ProxyConfiguration(
 )
 
 data class ProxyAPIResult(
-        val proxy: ProxyConfiguration,
+        val proxy: Proxy,
         val now: OffsetDateTime,
         val tries: Int,
         val responseBody: String,

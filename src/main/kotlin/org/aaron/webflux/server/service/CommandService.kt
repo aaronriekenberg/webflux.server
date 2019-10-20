@@ -6,7 +6,6 @@ import mu.KotlinLogging
 import org.aaron.webflux.server.config.CommandConfig
 import org.aaron.webflux.server.model.Command
 import org.aaron.webflux.server.model.CommandAPIResult
-import org.aaron.webflux.server.model.CommandConfiguration
 import org.springframework.stereotype.Service
 import java.io.InputStreamReader
 import java.time.OffsetDateTime
@@ -18,7 +17,6 @@ class CommandService(
         commandConfig: CommandConfig) {
 
     private val idToCommand: Map<String, Command> = commandConfig.commands
-            .map(CommandConfiguration::toCommand)
             .map { it.id to it }
             .toMap()
 
@@ -37,10 +35,10 @@ class CommandService(
 
         return withContext(Dispatchers.IO) {
             try {
-                val commandAndArgs = listOf(command.command) + command.arguments
-                val processBuilder = ProcessBuilder(commandAndArgs)
+                val commandAndArgsList = listOf(command.command) + command.arguments
+                val processBuilder = ProcessBuilder(commandAndArgsList)
                 processBuilder.redirectErrorStream(true)
-                logger.debug { "start process $commandAndArgs" }
+                logger.debug { "start process $commandAndArgsList" }
                 val process = processBuilder.start()
                 val exitValue = process.waitFor()
                 val output = InputStreamReader(process.inputStream)
