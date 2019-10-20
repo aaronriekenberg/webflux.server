@@ -8,8 +8,9 @@ data class Command(
         val command: String,
         val arguments: List<String> = listOf()) {
 
-    fun getCommandAndArguments(): String =
-            (listOf(command) + arguments).joinToString(separator = " ")
+    val commandAndArguments: String by lazy {
+        (listOf(command) + arguments).joinToString(separator = " ")
+    }
 
 }
 
