@@ -42,6 +42,7 @@ const setTimer = (apiPath) => {
 const onload = (requestText, apiPath) => {
     let preText = `Now:\n\n`;
     preText += `${requestText}\n\n`;
+    preText += 'Tries: 0\n\n';
     preText += 'Response Status:\n\n';
     preText += 'Response Headers:';
     updatePre(preText);
