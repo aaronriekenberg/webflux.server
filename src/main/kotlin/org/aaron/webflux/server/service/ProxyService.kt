@@ -32,7 +32,7 @@ class ProxyService(
             .map {
                 it.id to ProxyInfo(
                         proxy = it,
-                        semaphore = Semaphore(it.maxParallelCalls)
+                        semaphore = Semaphore(permits = it.maxParallelCalls)
                 )
             }
             .toMap()
@@ -55,10 +55,10 @@ class ProxyService(
 
         var success = false
         var tries = 0
-        var delayMS = proxyConfig.retryDelayMS
+        var delayMS = proxy.retryDelayMS
         var lastResult: ProxyAPIResult? = null
 
-        while ((!success) && (tries < proxyConfig.maxRetries)) {
+        while ((!success) && (tries < proxy.maxRetries)) {
             try {
                 ++tries
 
@@ -99,7 +99,7 @@ class ProxyService(
                         responseBody = "Proxy Exception: ${e.javaClass}: ${e.message}")
             }
 
-            if ((!success) && (tries < proxyConfig.maxRetries)) {
+            if ((!success) && (tries < proxy.maxRetries)) {
                 logger.debug { "delay $delayMS" }
                 delay(delayMS)
                 delayMS *= 2L

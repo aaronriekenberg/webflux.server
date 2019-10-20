@@ -6,14 +6,18 @@ data class MutableProxy(
         var id: String? = null,
         var description: String? = null,
         var url: String? = null,
-        var maxParallelCalls: Int = 10) {
+        var maxParallelCalls: Int = 10,
+        var maxRetries: Int = 2,
+        var retryDelayMS: Long = 100) {
 
     fun toProxy(): Proxy {
         return Proxy(
                 id = this.id!!,
                 description = this.description!!,
                 url = this.url!!,
-                maxParallelCalls = this.maxParallelCalls
+                maxParallelCalls = this.maxParallelCalls,
+                maxRetries = this.maxRetries,
+                retryDelayMS = this.retryDelayMS
         )
     }
 
@@ -23,7 +27,9 @@ data class Proxy(
         val id: String,
         val description: String,
         val url: String,
-        val maxParallelCalls: Int
+        val maxParallelCalls: Int,
+        val maxRetries: Int,
+        val retryDelayMS: Long
 )
 
 data class ProxyAPIResult(

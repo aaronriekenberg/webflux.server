@@ -9,8 +9,6 @@ private val logger = KotlinLogging.logger {}
 
 @ConfigurationProperties(prefix = "proxy-config")
 data class ProxyConfig(
-        var maxRetries: Int = 2,
-        var retryDelayMS: Long = 100L,
         var proxies: MutableList<MutableProxy> = mutableListOf()) {
 
     @PostConstruct

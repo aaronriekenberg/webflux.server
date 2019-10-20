@@ -27,7 +27,7 @@ proxy-config:
   - id: test_proxy
     description: google proxy
     url: http://www.google.com
-    maxParallelCalls: 10
+    maxParallelCalls: 1
 
 ---
 
