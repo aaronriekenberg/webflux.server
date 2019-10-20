@@ -8,7 +8,7 @@ data class Command(
         val command: String,
         val arguments: List<String> = listOf()) {
 
-    val commandAndArguments: String by lazy {
+    val commandAndArguments: String by lazy(mode = LazyThreadSafetyMode.PUBLICATION) {
         (listOf(command) + arguments).joinToString(separator = " ")
     }
 
