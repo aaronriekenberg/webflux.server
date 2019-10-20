@@ -24,7 +24,7 @@ private data class ProxyInfo(
 
 @Service
 class ProxyService(
-        private val proxyConfig: ProxyConfig,
+        proxyConfig: ProxyConfig,
         private val webClient: WebClient) {
 
     private val idToProxyInfo: Map<String, ProxyInfo> = proxyConfig.proxies
