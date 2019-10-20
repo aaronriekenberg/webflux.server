@@ -58,7 +58,7 @@ class ProxyService(
         var delayMS = proxy.retryDelayMS
         var lastResult: ProxyAPIResult? = null
 
-        while ((!success) && (tries < proxy.maxRetries)) {
+        while ((!success) && (tries < proxy.maxTries)) {
             try {
                 ++tries
 
@@ -99,7 +99,7 @@ class ProxyService(
                         responseBody = "Proxy Exception: ${e.javaClass}: ${e.message}")
             }
 
-            if ((!success) && (tries < proxy.maxRetries)) {
+            if ((!success) && (tries < proxy.maxTries)) {
                 logger.debug { "delay $delayMS" }
                 delay(delayMS)
                 delayMS *= 2L
