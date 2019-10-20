@@ -15,6 +15,7 @@ xRequest.onreadystatechange = function () {
         const jsonObject = JSON.parse(xRequest.responseText);
         let preText = `Now: ${jsonObject.now}\n\n`;
         preText += `GET ${jsonObject.proxy.url}\n\n`;
+        preText += `Tries: ${jsonObject.tries}\n\n`;
         preText += `Response Status: ${jsonObject.responseStatus}\n\n`;
         preText += `Response Headers:\n${stringifyPretty(jsonObject.responseHeaders)}\n\n`;
         preText += jsonObject.responseBody;

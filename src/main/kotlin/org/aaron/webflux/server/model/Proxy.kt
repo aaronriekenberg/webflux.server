@@ -26,6 +26,7 @@ data class Proxy(
 data class ProxyAPIResult(
         val proxy: Proxy,
         val now: OffsetDateTime,
+        val tries: Int,
         val responseBody: String,
         val responseHeaders: Map<String, List<String>> = emptyMap(),
         val responseStatus: Int = 0

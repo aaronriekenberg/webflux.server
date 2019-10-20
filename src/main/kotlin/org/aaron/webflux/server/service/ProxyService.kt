@@ -58,6 +58,7 @@ class ProxyService(
                     lastResult = ProxyAPIResult(
                             proxy = proxy,
                             now = OffsetDateTime.now(),
+                            tries = tries,
                             responseBody = "Proxy Error",
                             responseHeaders = responseHeaders,
                             responseStatus = clientResponse.statusCode().value())
@@ -66,6 +67,7 @@ class ProxyService(
                     lastResult = ProxyAPIResult(
                             proxy = proxy,
                             now = OffsetDateTime.now(),
+                            tries = tries,
                             responseBody = responseBody,
                             responseHeaders = responseHeaders,
                             responseStatus = clientResponse.statusCode().value())
@@ -76,6 +78,7 @@ class ProxyService(
                 lastResult = ProxyAPIResult(
                         proxy = proxy,
                         now = OffsetDateTime.now(),
+                        tries = tries,
                         responseBody = "Proxy Exception: ${e.javaClass}: ${e.message}")
             }
 
